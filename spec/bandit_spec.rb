@@ -31,7 +31,9 @@ describe Bandits do
 
   describe "best" do
     before do
-      @mybandits[3].reward
+      1000.times do
+        @mybandits[3].pull
+      end
     end
     its('best') { should be @mybandits[3] }
   end
@@ -46,4 +48,46 @@ describe Bandits do
 
 end
 
+shared_examples "a new machine" do
+  its('score') { should eq 0 }
+  its('pulls') { should eq 0 }
+  its('wins') { should eq 0 }
+end
 
+describe Bandit do
+
+  before(:each) do
+    @name = 'myname'
+    @chance = 0.2
+    @bandit = Bandit.new(@name,@chance)
+  end
+
+  subject { @bandit }
+
+  its('name') { should eq @name }
+  its('to_s') { should eq @name }
+  it_should_behave_like "a new machine"
+  
+  describe "after a few pulls" do
+
+    before do
+      1000.times do
+        @bandit.pull
+      end
+    end
+
+    its('pulls') { should eq 1000 }
+    its('wins') { should be > 0 }
+    its('score') { should be > 0 }
+    its('score') { should be <= 1 }
+
+    describe "and a reset" do
+      before do
+        @bandit.reset
+      end
+      it_should_behave_like "a new machine"
+    end
+
+  end
+
+end

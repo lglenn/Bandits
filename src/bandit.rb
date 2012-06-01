@@ -9,21 +9,21 @@ class Bandits
   end
 
   def each
-      @bandits.each do |b|
-          yield b
-      end
+    @bandits.each do |b|
+      yield b
+    end
   end
 
   def size
-      @bandits.size
+    @bandits.size
   end
 
   def names
-      @bandits.collect { |b| b.name }
+    @bandits.collect { |b| b.name }
   end
 
   def random
-      @bandits[rand(@bandits.size)]
+    @bandits[rand(@bandits.size)]
   end
 
   def best
@@ -41,8 +41,8 @@ class Bandit
   end
 
   def reset
-    @pulls = 1.0
-    @rewards = 1.0
+    @pulls = 0
+    @rewards = 0
   end
 
   def to_s
@@ -53,22 +53,26 @@ class Bandit
     @name
   end
 
+  def pulls
+    @pulls
+  end
+
+  def wins
+    @rewards
+  end
+
   def pull
     @pulls += 1
     if rand < @chance
-      reward
+      @rewards += 1
       return true
     else
       return false
     end
   end
 
-  def reward
-    @rewards += 1
-  end
-
   def score
-    @rewards / @pulls
+    @pulls == 0 ? 0 : @rewards.to_f / @pulls.to_f
   end
 
 end
