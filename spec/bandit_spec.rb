@@ -25,6 +25,10 @@ describe Bandits do
     end
   end
 
+  it "does a collect" do
+    @bandits.collect { |b| b.name }.should include(*@bandit_params.keys)
+  end
+
   its('size') { should be @mybandits.size }
   its('names') { should include(*@bandit_params.keys) }
   its('random') { should be_a_kind_of Bandit }
@@ -59,6 +63,8 @@ describe Bandit do
   before(:each) do
     @name = 'myname'
     @chance = 0.2
+    @cost = 25
+    @payout = 50
     @bandit = Bandit.new(@name,@chance)
   end
 
@@ -66,8 +72,37 @@ describe Bandit do
 
   its('name') { should eq @name }
   its('to_s') { should eq @name }
+  it "should have a default cost of 25" do
+    subject.cost.should eq 25
+  end
+  it "should have a default payout of 50" do
+    subject.payout.should eq 50
+  end
+
   it_should_behave_like "a new machine"
   
+  describe "with custom cost and payout" do
+    before do
+      @bandit = Bandit.new(@name,@chance,100,200)
+    end
+    its('cost') { should eq 100 }
+    its('payout') { should eq 200 }
+  end
+
+  describe "when it loses" do
+    before do
+      @bandit = Bandit.new(@name,0.0)
+    end
+    its('pull') { should be @cost * -1 }
+  end
+
+  describe "when it wins" do
+    before do
+      @bandit = Bandit.new(@name,1.0)
+    end
+    its('pull') { should be @payout }
+  end
+
   describe "after a few pulls" do
 
     before do

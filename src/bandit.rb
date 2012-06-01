@@ -8,6 +8,10 @@ class Bandits
     @bandits << bandit
   end
 
+  def collect &block
+    @bandits.collect &block
+  end
+
   def each
     @bandits.each do |b|
       yield b
@@ -34,9 +38,13 @@ end
 
 class Bandit
 
-  def initialize(name,chance)
+  attr_reader :cost, :payout
+
+  def initialize(name,chance,cost=25,payout=50)
     @name = name
     @chance = chance
+    @cost = cost
+    @payout = payout
     reset
   end
 
@@ -65,9 +73,9 @@ class Bandit
     @pulls += 1
     if rand < @chance
       @rewards += 1
-      return true
+      return payout
     else
-      return false
+      return cost * -1
     end
   end
 
