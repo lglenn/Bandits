@@ -14,14 +14,14 @@ describe Kitty do
 
   describe "winning" do
     before do
-      @kitty.win 10
+      @kitty += 10
     end
     its('balance') { should eq @start + 10 }
   end
 
   describe "losing" do
     before do
-      @kitty.lose 10
+      @kitty -= 10
     end
     its('balance') { should eq @start - 10 }
   end

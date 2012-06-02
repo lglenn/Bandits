@@ -7,12 +7,14 @@ class Kitty
     @starting_balance = @balance
   end
 
-  def win(amount)
+  def +(amount)
     @balance += amount
+    self
   end
 
-  def lose(amount)
+  def -(amount)
     @balance -= amount
+    self
   end
 
   def loss
