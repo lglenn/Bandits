@@ -34,6 +34,10 @@ class Bandits
     @bandits.reduce { |best,bandit| best = bandit.score > best.score ? bandit : best }
   end
 
+  def reset
+    @bandits.each { |b| b.reset }
+  end
+
 end
 
 class Bandit

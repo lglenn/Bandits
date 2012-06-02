@@ -1,6 +1,12 @@
 require 'spec_helper'
 require 'bandit'
 
+shared_examples "a new machine" do
+  its('score') { should eq 0 }
+  its('pulls') { should eq 0 }
+  its('wins') { should eq 0 }
+end
+
 describe Bandits do
 
   before(:each) do
@@ -51,12 +57,16 @@ describe Bandits do
 
   end
 
-end
+  describe "reset" do
+    before do
+      1000.times { @bandits.each { |b| b.pull } }
+      @bandits.reset
+    end
+    it "resets the score on each bandit" do
+      @bandits.each { |b| b.score.should eq 0 }
+    end
+  end
 
-shared_examples "a new machine" do
-  its('score') { should eq 0 }
-  its('pulls') { should eq 0 }
-  its('wins') { should eq 0 }
 end
 
 describe Bandit do
