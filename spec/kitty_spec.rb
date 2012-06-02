@@ -26,4 +26,14 @@ describe Kitty do
     its('balance') { should eq @start - 10 }
   end
 
+  its('loss') { should eq 0 }
+
+  describe "loss tells you how much you've lost" do
+      before do
+          @kitty -= 100
+          @kitty -= 10
+      end
+      its('loss') { should eq 110 }
+  end
+
 end
