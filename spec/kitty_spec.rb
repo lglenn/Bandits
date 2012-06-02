@@ -36,4 +36,14 @@ describe Kitty do
       its('loss') { should eq 110 }
   end
 
+  describe "reset" do
+      before do
+          @kitty += 1892
+      end
+      it "sets the balance back to the starting value" do
+          @kitty.reset
+          @kitty.balance.should eq @start
+      end
+  end
+
 end

@@ -21,4 +21,8 @@ class Kitty
     @starting_balance - @balance
   end
 
+  def reset
+      @balance = @starting_balance
+  end
+
 end
