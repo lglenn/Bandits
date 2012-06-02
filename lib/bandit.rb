@@ -57,8 +57,8 @@ class Bandit
   end
 
   def reset
-    @pulls = 0
-    @rewards = 0
+    @pulls = 1
+    @rewards = 1
   end
 
   def to_s
@@ -70,11 +70,11 @@ class Bandit
   end
 
   def pulls
-    @pulls
+    @pulls - 1
   end
 
   def wins
-    @rewards
+    @rewards - 1
   end
 
   def pull
@@ -88,7 +88,7 @@ class Bandit
   end
 
   def score
-    @pulls == 0 ? 0 : @rewards.to_f / @pulls.to_f
+    @rewards.to_f / @pulls.to_f
   end
 
 end

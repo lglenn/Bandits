@@ -2,7 +2,7 @@ require 'spec_helper'
 require 'bandit'
 
 shared_examples "a new machine" do
-  its('score') { should eq 0 }
+  its('score') { should eq 1 }
   its('pulls') { should eq 0 }
   its('wins') { should eq 0 }
 end
@@ -43,7 +43,7 @@ describe Bandits do
   describe "best" do
     before do
       1000.times do
-        @mybandits[3].pull
+        @bandits.each { |b| b.pull }
       end
     end
     its('best') { should be @mybandits[3] }
@@ -63,7 +63,7 @@ describe Bandits do
       @bandits.reset
     end
     it "resets the score on each bandit" do
-      @bandits.each { |b| b.score.should eq 0 }
+      @bandits.each { |b| b.score.should eq 1.0 }
     end
   end
 
@@ -135,8 +135,8 @@ describe Bandit do
 
     its('pulls') { should eq 1000 }
     its('wins') { should be > 0 }
-    its('score') { should be > 0 }
-    its('score') { should be <= 1 }
+    its('score') { should be < 1 }
+    its('score') { should be <= 2 }
 
     describe "and a reset" do
       before do
