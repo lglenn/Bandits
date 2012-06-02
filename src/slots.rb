@@ -1,37 +1,42 @@
 require 'bandit'
+require 'kitty'
 
-@chances = { 'a' => 0.01, 'b' => 0.01, 'c' => 0.01, 'd' => 0.02 }
+@chances = { 'a' => 0.02, 'b' => 0.0802 }
 @bandits = Bandits.new
-@kitty = 20000 * 25 * @chances.size
-@initial_kitty = @kitty
+@rounds = 1000000
+@cost = 25
+@ab_kitty = Kitty.new(@rounds * @cost * @bandits.size)
+@bandit_kitty = Kitty.new(@rounds * @cost * @bandits.size)
 
 @chances.each do |name,chance|
-  @bandits << Bandit.new(name,chance)
+  @bandits << Bandit.new(name,chance,@cost,@cost*3)
 end
 
-20000.times do |i|
+@rounds.times do |i|
   @bandits.each do |bandit|
-    @kitty += bandit.pull
+    @ab_kitty += bandit.pull
   end
+  #if i % 1000 == 0
+      #print "#{i}\t"
+      #puts @bandits.scores.collect { |s| sprintf("%0.5f",s) }.join("\t")
+  #end
 end
 
-def scores
-  @bandits.collect { |bandit| "#{bandit}: #{sprintf("%0.3f",bandit.score)}" }.join(' ')
-end
+puts "Doing an A/B test, you've found that the scores are: [#{@bandits.scores}]. And, the test cost you $#{sprintf("%0.2f",@ab_kitty.loss / 100.0)}!"
 
-@loss = @initial_kitty - @kitty
+@bandits.reset
 
-puts "Doing an A/B test, you've found that the scores are: [#{scores}]. And, the test cost you $#{sprintf("%0.2f",@loss / 100.0)}!"
-
-@bandits.each { |b| b.reset }
-
-@kitty = 20000 * 25 * @chances.size
-
-80000.times do |i|
+(@rounds * @bandits.size).times do |i|
   bandit = rand < 0.1 ? @bandits.random : @bandits.best
-  @kitty += bandit.pull
+  @bandit_kitty += bandit.pull
+  #if i % (@bandits.size * 1000) == 0
+      #print "#{i}\t"
+      #puts @bandits.scores.collect { |s| sprintf("%0.5f",s) }.join("\t")
+  #end
 end
 
-@loss = @initial_kitty - @kitty
+puts "Using a bandit algorithm, you've found that the scores are: [#{@bandits.scores}]. And, the test cost you $#{sprintf("%0.2f",@bandit_kitty.loss / 100.0)}!"
 
-puts "Using a bandit algorithm, you've found that the scores are: [#{scores}]. And, the test cost you $#{sprintf("%0.2f",@loss / 100.0)}!"
+diff = (@ab_kitty.balance - @bandit_kitty.balance)/@ab_kitty.balance.to_f
+
+puts "Your savings were #{sprintf("%0.1f",diff * 100)}%."
