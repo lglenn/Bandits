@@ -67,6 +67,17 @@ describe Bandits do
     end
   end
 
+  describe "scores" do
+    before do
+      1000.times { @bandits.each { |b| b.pull } }
+    end
+    it "is an array of floats" do
+      @bandits.scores.each do |s|
+        s.should be_a_kind_of Float
+      end
+    end
+  end
+
 end
 
 describe Bandit do

@@ -38,6 +38,10 @@ class Bandits
     @bandits.each { |b| b.reset }
   end
 
+  def scores
+    @bandits.collect { |bandit| bandit.score }
+  end
+
 end
 
 class Bandit
